@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import fetchMovies from 'api/fetchMovies';
@@ -26,7 +26,8 @@ const MoviesDetails = () => {
 
   const { movieId } = useParams();
   const location = useLocation();
-  const backLink = location.state?.from ?? '/';
+  const backLink = useRef(location.state?.from ?? '/');
+  // const backLink = location.state?.from ?? '/';
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,7 +46,8 @@ const MoviesDetails = () => {
   }, [movieId]);
 
   const handleBack = () => {
-    navigate(backLink);
+    navigate(backLink.current);
+    // navigate(backLink);
   };
 
   if (!movie) return;
@@ -83,14 +85,10 @@ const MoviesDetails = () => {
         <ThumbTitle>Additional information</ThumbTitle>
         <ThumbList>
           <li>
-            <LinkStyled to="cast" state={{ from: backLink }}>
-              Cast
-            </LinkStyled>
+            <LinkStyled to="cast">Cast</LinkStyled>
           </li>
           <li>
-            <LinkStyled to="reviews" state={{ from: backLink }}>
-              Reviews
-            </LinkStyled>
+            <LinkStyled to="reviews">Reviews</LinkStyled>
           </li>
         </ThumbList>
         <Suspense fallback={<Loader />}>
@@ -103,5 +101,4 @@ const MoviesDetails = () => {
 
 export default MoviesDetails;
 
-// const backLink1 = useRef(location.state?.from ?? '/');
 // state={{ from: backLink }}
